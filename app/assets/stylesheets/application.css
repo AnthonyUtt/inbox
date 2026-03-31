@@ -1,0 +1,120 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  height: 100%;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background: #333;
+  color: #FAF5FF;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 1rem;
+}
+
+.form-wrapper {
+  width: 100%;
+  max-width: 540px;
+}
+
+textarea {
+  display: block;
+  width: 100%;
+  min-height: 200px;
+  padding: 0.75rem;
+  font-family: inherit;
+  font-size: 1rem;
+  line-height: 1.5;
+  border: none;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #FAF5FF;
+  resize: vertical;
+  outline: none;
+  transition: background 0.15s;
+}
+
+textarea:focus {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+textarea::placeholder {
+  color: rgba(250, 245, 255, 0.4);
+  white-space: pre-line;
+}
+
+input[type="submit"] {
+  display: block;
+  width: 100%;
+  margin-top: 0.75rem;
+  padding: 0.6rem 1.25rem;
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #fff;
+  background: #3db7b3;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+
+input[type="submit"]:hover {
+  opacity: 0.85;
+}
+
+/* Toasts */
+
+#toasts {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.toast {
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  animation: toast-in 0.2s ease-out;
+}
+
+.toast p {
+  margin: 0;
+}
+
+.toast--success {
+  background: rgba(61, 183, 179, 0.15);
+  color: #6ee7e3;
+  border: 1px solid rgba(61, 183, 179, 0.3);
+}
+
+.toast--error {
+  background: rgba(239, 68, 68, 0.15);
+  color: #fca5a5;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.toast--fade-out {
+  animation: toast-out 0.3s ease-in forwards;
+}
+
+@keyframes toast-in {
+  from { opacity: 0; transform: translateY(-0.5rem); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes toast-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}

@@ -1,0 +1,6 @@
+<%= form_with url: ideas_path, method: :post do |f| %>
+  <%= f.text_area :body, placeholder: "What's on your mind?\n\nFirst line becomes the title...",
+      rows: 8, autofocus: true, data: { inbox_target: "textarea" },
+      name: "idea[body]" %>
+  <%= f.submit "Save" %>
+<% end %>
