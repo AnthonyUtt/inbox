@@ -19,14 +19,21 @@ class IdeasController < ApplicationController
     dir = ENV.fetch("INBOX_WORKING_DIR", "/inbox")
     filepath = File.join(dir, filename)
 
+    quoted_content = content.lines.map { |line| "> #{line.chomp}" }.join("\n")
+    quoted_content = "> " if quoted_content.empty?
+
     file_content = <<~MD
       ---
-      created-at: #{Time.current.iso8601}
+      up:
+      tags:
+        - fleeting
       ---
 
-      # #{title}
 
-      #{content}
+      # References
+
+      > [!QUOTE] Original Capture
+      #{quoted_content}
     MD
 
     begin

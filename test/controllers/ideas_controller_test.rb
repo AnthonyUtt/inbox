@@ -31,9 +31,11 @@ class IdeasControllerTest < ActionDispatch::IntegrationTest
 
     content = File.read(files.first)
     assert_match(/^---$/, content)
-    assert_match(/^created-at: /, content)
-    assert_match(/^# My Great Idea$/, content)
-    assert_match(/Some details here/, content)
+    assert_match(/^tags:$/, content)
+    assert_match(/fleeting/, content)
+    assert_match(/^# References$/, content)
+    assert_match(/\[!QUOTE\] Original Capture/, content)
+    assert_match(/^> Some details here$/, content)
 
     assert_equal "my_great_idea.md", File.basename(files.first)
   end
