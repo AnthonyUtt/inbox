@@ -3,15 +3,17 @@ class IdeasController < ApplicationController
   end
 
   def create
-    body = params.require(:idea).permit(:body)[:body].to_s.strip
+    idea_params = params.require(:idea).permit(:title, :content)
+    title = idea_params[:title].to_s.strip
+    content = idea_params[:content].to_s.strip
 
-    if body.blank?
+    if title.blank? && content.blank?
       return render_toast("Please enter an idea.", :error)
     end
 
-    lines = body.lines.map(&:chomp)
-    title = lines.first.strip
-    content = lines.drop(1).join("\n").strip
+    if title.blank?
+      title = Time.current.strftime("%Y-%m-%d-%H%M%S")
+    end
 
     filename = "#{title.underscore.parameterize(separator: '_')}.md"
     dir = ENV.fetch("INBOX_WORKING_DIR", "/inbox")
