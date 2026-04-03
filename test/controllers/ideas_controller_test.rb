@@ -21,23 +21,27 @@ class IdeasControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "POST /ideas with title and content writes a markdown file" do
-    post ideas_path, params: { idea: { title: "My Great Idea", content: "Some details here" } },
-      as: :turbo_stream
+    freeze_time do
+      post ideas_path, params: { idea: { title: "My Great Idea", content: "Some details here" } },
+        as: :turbo_stream
 
-    assert_response :success
+      assert_response :success
 
-    files = Dir.glob("#{@dir}/*.md")
-    assert_equal 1, files.length
+      files = Dir.glob("#{@dir}/*.md")
+      assert_equal 1, files.length
 
-    content = File.read(files.first)
-    assert_match(/^---$/, content)
-    assert_match(/^tags:$/, content)
-    assert_match(/fleeting/, content)
-    assert_match(/^# References$/, content)
-    assert_match(/\[!QUOTE\] Original Capture/, content)
-    assert_match(/^> Some details here$/, content)
+      content = File.read(files.first)
+      assert_match(/^---$/, content)
+      assert_match(/^title: "My Great Idea"$/, content)
+      assert_match(/^tags:$/, content)
+      assert_match(/fleeting/, content)
+      assert_match(/^# References$/, content)
+      assert_match(/\[!QUOTE\] Original Capture/, content)
+      assert_match(/^> Some details here$/, content)
 
-    assert_equal "my_great_idea.md", File.basename(files.first)
+      timestamp = Time.current.strftime("%Y-%m-%d-%H%M%S")
+      assert_equal "some_details_here_#{timestamp}.md", File.basename(files.first)
+    end
   end
 
   test "POST /ideas with blank title and content returns error toast" do
@@ -47,17 +51,24 @@ class IdeasControllerTest < ActionDispatch::IntegrationTest
     assert_match(/Please enter an idea/, response.body)
   end
 
-  test "POST /ideas with title only writes file with empty content" do
-    post ideas_path, params: { idea: { title: "Just A Title", content: "" } }, as: :turbo_stream
+  test "POST /ideas with title only uses timestamp as filename slug" do
+    freeze_time do
+      post ideas_path, params: { idea: { title: "Just A Title", content: "" } }, as: :turbo_stream
 
-    assert_response :success
+      assert_response :success
 
-    files = Dir.glob("#{@dir}/*.md")
-    assert_equal 1, files.length
-    assert_equal "just_a_title.md", File.basename(files.first)
+      files = Dir.glob("#{@dir}/*.md")
+      assert_equal 1, files.length
+
+      timestamp = Time.current.strftime("%Y-%m-%d-%H%M%S")
+      assert_equal "#{timestamp}_#{timestamp}.md", File.basename(files.first)
+
+      content = File.read(files.first)
+      assert_match(/^title: "Just A Title"$/, content)
+    end
   end
 
-  test "POST /ideas without title uses timestamp-based filename" do
+  test "POST /ideas without title uses content words in filename" do
     freeze_time do
       post ideas_path, params: { idea: { title: "", content: "Some content without a title" } },
         as: :turbo_stream
@@ -67,11 +78,12 @@ class IdeasControllerTest < ActionDispatch::IntegrationTest
       files = Dir.glob("#{@dir}/*.md")
       assert_equal 1, files.length
 
-      expected_name = "#{Time.current.strftime('%Y_%m_%d_%H%M%S')}.md"
-      assert_equal expected_name, File.basename(files.first)
+      timestamp = Time.current.strftime("%Y-%m-%d-%H%M%S")
+      assert_equal "some_content_without_a_title_#{timestamp}.md", File.basename(files.first)
 
       content = File.read(files.first)
       assert_match(/Some content without a title/, content)
+      refute_match(/^title:/, content)
     end
   end
 

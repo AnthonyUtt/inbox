@@ -11,20 +11,20 @@ class IdeasController < ApplicationController
       return render_toast("Please enter an idea.", :error)
     end
 
-    if title.blank?
-      title = Time.current.strftime("%Y-%m-%d-%H%M%S")
-    end
-
-    filename = "#{title.underscore.parameterize(separator: '_')}.md"
+    timestamp = Time.current.strftime("%Y-%m-%d-%H%M%S")
+    slug = content.present? ? content.split(/\s+/).first(5).join(" ").parameterize(separator: "_") : timestamp
+    filename = "#{slug}_#{timestamp}.md"
     dir = ENV.fetch("INBOX_WORKING_DIR", "/inbox")
     filepath = File.join(dir, filename)
 
     quoted_content = content.lines.map { |line| "> #{line.chomp}" }.join("\n")
     quoted_content = "> " if quoted_content.empty?
 
+    title_line = title.present? ? "\ntitle: \"#{title.gsub('"', '\\"')}\"" : ""
+
     file_content = <<~MD
       ---
-      up:
+      up:#{title_line}
       tags:
         - fleeting
       ---
