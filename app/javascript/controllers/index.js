@@ -7,5 +7,8 @@ import { application } from "./application"
 import InboxController from "./inbox_controller"
 application.register("inbox", InboxController)
 
+import MarkdownController from "./markdown_controller"
+application.register("markdown", MarkdownController)
+
 import ToastController from "./toast_controller"
 application.register("toast", ToastController)
