@@ -2,7 +2,9 @@
   <%= f.text_field :title, placeholder: "Title (optional)",
       name: "idea[title]", data: { inbox_target: "title" } %>
   <%= f.text_area :content, placeholder: "What's on your mind?",
-      rows: 8, autofocus: true, data: { inbox_target: "textarea" },
+      rows: 8, autofocus: true,
+      data: { inbox_target: "textarea", markdown_target: "textarea",
+              action: "keydown->markdown#handleKeydown" },
       name: "idea[content]" %>
   <%= f.submit "Save" %>
 <% end %>
